@@ -1,16 +1,19 @@
 describe("The oscilloscope tuner", function() {
-  it("closes its AudioContext and setInterval", function(done) {
+  it("closes its AudioContext and stops requesting animation frames", function() {
     var canvas = document.createElement("canvas");
-    spyOn(window, "clearInterval").and.callThrough();
     var ot = new OscilloscopeTuner(canvas);
-    ot.started.then(function() {
-      expect(window.clearInterval).not.toHaveBeenCalled();
+    return ot.started.then(function() {
       expect(ot.audioContext.state).not.toBe("closed");
-      return ot.dispose();
+      var disposePromise = ot.dispose();
+      spyOn(window, "requestAnimationFrame");
+      return disposePromise;
     }).then(function() {
       expect(ot.audioContext.state).toBe("closed");
-      expect(window.clearInterval).toHaveBeenCalledWith(ot.setIntervalId);
-      done();
+      return new Promise(function(resolve) {
+        setTimeout(resolve, 100);
+      });
+    }).then(function() {
+      expect(requestAnimationFrame).not.toHaveBeenCalled();
     });
   });
 });

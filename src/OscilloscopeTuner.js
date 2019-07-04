@@ -2,11 +2,13 @@ function OscilloscopeTuner(canvas) {
   var that = this;
   this.started = navigator.mediaDevices.getUserMedia({audio: true}).then(function() {
     that.audioContext = new AudioContext();
-    that.setIntervalId = setInterval(function(){}, 1000);
+    that.requestAnimationFrameId = requestAnimationFrame(function tick() {
+      that.requestAnimationFrameId = requestAnimationFrame(tick);
+    });
   });
 };
 
 OscilloscopeTuner.prototype.dispose = function() {
-  clearInterval(this.setIntervalId);
+  cancelAnimationFrame(this.requestAnimationFrameId);
   return this.audioContext.close();
 };
