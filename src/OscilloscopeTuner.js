@@ -1,6 +1,10 @@
 function OscilloscopeTuner(canvas) {
+
+};
+
+OscilloscopeTuner.prototype.start = function() {
   var that = this;
-  this.started = navigator.mediaDevices.getUserMedia({audio: true}).then(function() {
+  return navigator.mediaDevices.getUserMedia({audio: true}).then(function() {
     that.audioContext = new AudioContext();
     that.requestAnimationFrameId = requestAnimationFrame(function tick() {
       that.requestAnimationFrameId = requestAnimationFrame(tick);
