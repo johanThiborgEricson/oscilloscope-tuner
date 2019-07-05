@@ -10,5 +10,7 @@ function OscilloscopeTuner(canvas) {
 
 OscilloscopeTuner.prototype.dispose = function() {
   cancelAnimationFrame(this.requestAnimationFrameId);
-  return this.audioContext.close();
+  return this.audioContext.state != "closed" 
+    ? this.audioContext.close()
+    : Promise.resolve(); 
 };
