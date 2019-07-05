@@ -38,4 +38,21 @@ describe("The oscilloscope tuner", function() {
     })
     ;
   });
+
+  it("doesn't close a closed audio context", function() {
+    var canvas = document.createElement("canvas");
+    var ot = new OscilloscopeTuner(canvas);
+    return ot.started
+    .then(function() {
+      return ot.dispose();
+    })
+    .then(function() {
+      spyOn(ot.audioContext, "close");
+      return ot.dispose();
+    })
+    .then(function() {
+      expect(ot.audioContext.close).not.toHaveBeenCalled();
+    })
+    ; 
+  });
 });
