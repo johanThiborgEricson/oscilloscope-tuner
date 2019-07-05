@@ -1,8 +1,23 @@
 describe("The oscilloscope tuner", function() {
+  var canvas;
+  var ot;
+  beforeEach(function() {
+    canvas = document.createElement("canvas");
+    ot = new OscilloscopeTuner(canvas);
+  });
+
+  afterEach(function() {
+    ot.dispose();
+  });
+
+  var promiseTimeoutSixAnimationFrames = function() {
+    return new Promise(function(resolve) {
+      setTimeout(resolve, 100);
+    });
+  };
+
   it("closes its AudioContext and stops requesting animation frames", function() {
-    var canvas = document.createElement("canvas");
-    var ot = new OscilloscopeTuner(canvas);
-    return ot.started
+    return ot.start()
     .then(function() {
       expect(ot.audioContext.state).not.toBe("closed");
       var disposePromise = ot.dispose();
@@ -11,9 +26,7 @@ describe("The oscilloscope tuner", function() {
     })
     .then(function() {
       expect(ot.audioContext.state).toBe("closed");
-      return new Promise(function(resolve) {
-        setTimeout(resolve, 100);
-      });
+      return promiseTimeoutSixAnimationFrames();
     })
     .then(function() {
       expect(requestAnimationFrame).not.toHaveBeenCalled();
@@ -22,27 +35,18 @@ describe("The oscilloscope tuner", function() {
   
   it("Requests animation frames repeatedly", function() {
     spyOn(window, "requestAnimationFrame").and.callThrough();
-    var canvas = document.createElement("canvas");
-    var ot = new OscilloscopeTuner(canvas);
-    return ot.started
+    return ot.start()
     .then(function() {
-      return new Promise(function(resolve) {
-        setTimeout(resolve, 100);
-      });
+      return promiseTimeoutSixAnimationFrames();
     })
     .then(function() {
       expect(requestAnimationFrame.calls.count()).toBeGreaterThan(1);
-    })
-    .then(function() {
-      return ot.dispose();
     })
     ;
   });
 
   it("doesn't close a closed audio context", function() {
-    var canvas = document.createElement("canvas");
-    var ot = new OscilloscopeTuner(canvas);
-    return ot.started
+    return ot.start()
     .then(function() {
       return ot.dispose();
     })
