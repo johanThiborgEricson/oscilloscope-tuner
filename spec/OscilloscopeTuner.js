@@ -59,4 +59,20 @@ describe("The oscilloscope tuner", function() {
     })
     ; 
   });
+
+  it("draws the input from the microphone", function(done) {
+    var context = canvas.getContext("2d");
+    ot.start();
+    var firstCall = false;
+    var firstValue;
+    spyOn(context, "lineTo").and.callFake(function(x, y){
+      if(firstCall){
+        firstCall = false;
+        firstValue = y;
+      } else if(y != firstValue){
+        expect(y).not.toBe(firstValue);
+        done();
+      }
+    });
+  });
 });
