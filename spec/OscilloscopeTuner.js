@@ -76,4 +76,40 @@ describe("The oscilloscope tuner", function() {
       }
     });
   });
+
+  it("draws something", function() {
+    var context = canvas.getContext("2d");
+    spyOn(context, "moveTo").and.callThrough();
+    spyOn(context, "lineTo").and.callThrough();
+    spyOn(context, "stroke").and.callThrough();
+    return ot.start()
+    .then(promiseTimeoutSixAnimationFrames)
+    .then(function() {
+      expect(context.moveTo).toHaveBeenCalled();
+      expect(context.stroke).toHaveBeenCalled();
+    });
+  });
+
+  it("draws data from the pipe", function() {
+    var firstX = 0;
+    var lastX = 1;
+    var ys = [ -0.25, 0.25, 0.5];
+    var line = new Line(firstX, lastX, ys);
+    spyOn(ot, "pipe").and.returnValue(line);
+    var context = canvas.getContext("2d");
+    spyOn(context, "moveTo").and.callThrough();
+    spyOn(context, "lineTo").and.callThrough();
+    spyOn(context, "stroke").and.callThrough();
+    ot.tick();
+    var h = canvas.height;
+    var w = canvas.width;
+    expect(h).toBeGreaterThan(0);
+    expect(w).toBeGreaterThan(0);
+    expect(context.moveTo)
+      .toHaveBeenCalledWith(0 * w, 0.625 * h);
+    expect(context.lineTo)
+      .toHaveBeenCalledWith(0.5 * w, 0.375 * h);
+    expect(context.lineTo)
+      .toHaveBeenCalledWith(1 * w, 0.25 * h);
+  });
 });
