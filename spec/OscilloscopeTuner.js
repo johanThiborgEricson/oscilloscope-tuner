@@ -1,9 +1,10 @@
 describe("The oscilloscope tuner", function() {
   var canvas;
   var ot;
+  var streamPromise = navigator.mediaDevices.getUserMedia({audio: true});
   beforeEach(function() {
     canvas = document.createElement("canvas");
-    ot = new OscilloscopeTuner(canvas);
+    ot = new OscilloscopeTuner(streamPromise, canvas);
   });
 
   afterEach(function() {
