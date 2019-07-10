@@ -1,4 +1,5 @@
-function OscilloscopeTuner(canvas) {
+function OscilloscopeTuner(streamPromise, canvas) {
+  this.streamPromise = streamPromise;
   this.canvas = canvas;
 };
 
