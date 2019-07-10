@@ -5,7 +5,8 @@ function OscilloscopeTuner(streamPromise, canvas) {
 
 OscilloscopeTuner.prototype.start = function() {
   var that = this;
-  return navigator.mediaDevices.getUserMedia({audio: true}).then(function(stream) {
+  return this.streamPromise
+  .then(function(stream) {
     that.initAudioContext(stream);
     that.requestAnimationFrameId = requestAnimationFrame(function tick() {
       that.tick();
