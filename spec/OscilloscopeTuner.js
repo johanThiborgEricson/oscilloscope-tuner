@@ -112,4 +112,22 @@ describe("The oscilloscope tuner", function() {
     expect(context.lineTo)
       .toHaveBeenCalledWith(1 * w, 0.25 * h);
   });
+
+  it("observes left- and rightmost x", function() {
+    var leftmostX = -1;
+    var rightmostX = 2;
+    var ys = [ 0, 0 ];
+    var line = new Line(leftmostX, rightmostX, ys);
+    spyOn(ot, "pipe").and.returnValue(line);
+    var context = canvas.getContext("2d");
+    spyOn(context, "moveTo").and.callThrough();
+    spyOn(context, "lineTo").and.callThrough();
+    ot.tick();
+    var h = canvas.height;
+    var w = canvas.width;
+    expect(context.moveTo)
+      .toHaveBeenCalledWith(-w, h / 2);
+    expect(context.lineTo)
+      .toHaveBeenCalledWith(2 * w, h / 2);
+  });
 });
