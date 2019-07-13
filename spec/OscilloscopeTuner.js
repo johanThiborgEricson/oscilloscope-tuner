@@ -91,10 +91,10 @@ describe("The oscilloscope tuner", function() {
   });
 
   it("draws data from the pipe", function() {
-    var firstX = 0;
-    var lastX = 1;
+    var leftmostX = 0;
+    var rightmostX = 1;
     var ys = [ -0.25, 0.25, 0.5];
-    var line = new Line(firstX, lastX, ys);
+    var line = new Line(leftmostX, rightmostX, ys);
     spyOn(ot, "pipe").and.returnValue(line);
     var context = canvas.getContext("2d");
     spyOn(context, "moveTo").and.callThrough();
