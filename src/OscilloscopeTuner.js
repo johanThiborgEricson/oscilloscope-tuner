@@ -1,5 +1,6 @@
 function OscilloscopeTuner(canvas) {
   this.canvas = canvas;
+  this.stopped = false;
 };
 
 OscilloscopeTuner.prototype.start = function() {
@@ -7,6 +8,9 @@ OscilloscopeTuner.prototype.start = function() {
   return navigator.mediaDevices.getUserMedia({audio: true}).then(function(stream) {
     that.initAudioContext(stream);
     that.requestAnimationFrameId = requestAnimationFrame(function tick() {
+      if(that.stopped){
+        return;
+      }
       that.tick();
       that.requestAnimationFrameId = requestAnimationFrame(tick);
     });
@@ -32,6 +36,7 @@ OscilloscopeTuner.prototype.tick = function() {
 
 OscilloscopeTuner.prototype.dispose = function() {
   cancelAnimationFrame(this.requestAnimationFrameId);
+  this.stopped = true;
   return this.audioContext.state != "closed" 
     ? this.audioContext.close()
     : Promise.resolve(); 
