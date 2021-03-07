@@ -1,6 +1,7 @@
 function OscilloscopeTuner(streamPromise, canvas) {
   this.streamPromise = streamPromise;
   this.canvas = canvas;
+  this.stopped = false;
 };
 
 OscilloscopeTuner.prototype.start = function() {
@@ -9,6 +10,9 @@ OscilloscopeTuner.prototype.start = function() {
   .then(function(stream) {
     that.initAudioContext(stream);
     that.requestAnimationFrameId = requestAnimationFrame(function tick() {
+      if(that.stopped){
+        return;
+      }
       that.tick();
       that.requestAnimationFrameId = requestAnimationFrame(tick);
     });
@@ -36,6 +40,7 @@ OscilloscopeTuner.prototype.pipe = function() {
 
 OscilloscopeTuner.prototype.dispose = function() {
   cancelAnimationFrame(this.requestAnimationFrameId);
+  this.stopped = true;
   var ac = this.audioContext;
   return ac && (ac.state != "closed")
     ? this.audioContext.close()
