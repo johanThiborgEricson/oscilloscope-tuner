@@ -11,6 +11,17 @@ describe("The oscilloscope tuner", function() {
     ot.dispose();
   });
 
+  afterAll(function() {
+    var canvas = document.createElement("canvas");
+    var b = document.body
+    b.insertBefore(canvas, b.firstChild);
+    var ot = new OscilloscopeTuner(streamPromise, canvas);
+    ot.start();
+    setTimeout(function() {
+      ot.dispose();
+    }, 10000);
+  });
+  
   var promiseTimeoutSixAnimationFrames = function() {
     return new Promise(function(resolve) {
       setTimeout(resolve, 100);
